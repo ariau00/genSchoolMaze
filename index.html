@@ -11,18 +11,25 @@
 </body>
 
 <script>
-    let mapSize = 5;
+    let mapSize = prompt("Please enter map size (5-10)");
+    while (!checkMapSize(mapSize)) {
+        mapSize = prompt("Please enter map size (5-10)");
+    }
     let mapArray = [];
     let photo = ['trap.png', 'road.png', 'through.png', 'endPoint.png', 'user.png'];
     let randomValue = 0;
     let user;
     let nowPos;
     let endPos;
+    let trapPos = [];
+
     start();
+
 
     function start() {
         printMap();
         setUserAndEndPoint();
+        getTrapPos();
         updateView();
     }
 
@@ -31,17 +38,31 @@
             if (i == 0 || (i % mapSize) == 0) {
                 $("body").append("<div width=100%></div>");
             }
-            $("body").append("<img src=" + mapArray[i].map + "></img>");
+            $("body").append(`<img id=${mapArray[i].ID} src="${mapArray[i].map}" onclick="killTrap(${mapArray[i].ID})"></img>`);
+        }
+    }
+    function getTrapPos() {
+        const trapList = mapArray.filter(trap => trap.map === 'trap.png')
+        console.log(trapList[1].ID)
+        for (let i = 0; i < trapList.length; i++) {
+            trapPos.push(trapList[i].ID);
         }
     }
 
-    // for (let i = 0; i < mapSize; i++) {
-    //     for(let j = 0; j < mapSize; j++){
-    //         $("body").append("<img src='road.png'></div>");
-    //     }
-    //     let br = document.createElement('br');
-    //     document.body.append(br);
-    // }
+    function killTrap(trap) {
+
+        const findTrap = trapPos.find(element => element == trap)
+        if (findTrap >= 0) {
+            const temp = trapPos.indexOf(trap);
+            if (temp !== -1) {
+                trapPos.splice(temp, 1);
+            }
+            mapArray[trap].map = photo[1];
+            clearMap();
+            updateView();
+
+        }
+    }
 
     function printMap() {
         for (let i = 0; i < mapSize * mapSize; i++) {
@@ -71,10 +92,6 @@
         return randomValue;
     }
 
-    function userMove() {
-        let userPoint = mapArray.find(user => user.map == photo[4])
-    }
-
     function xyTransform(id) {
         let xy = [];
 
@@ -90,22 +107,33 @@
         $("body").html("");
     }
 
+    function checkMapSize(value) {
+        let regPos = /^[0-9]*[1-9][0-9]*$/;
+
+        if (regPos.test(value) && value >=5 && value <= 10) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     addEventListener('keydown', (e) => {
+
         if (e.keyCode == 38) {
-            if(nowPos[0] >= 0){
+            if (nowPos[0] > 0) {
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[2];
-                nowPos[0] = nowPos[0] - 1;
+                nowPos[0]--;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[4];
                 clearMap()
                 updateView();
             }
         } else if (e.keyCode == 39) {
-            if(nowPos[1] < mapSize){
+            if (nowPos[1] < mapSize - 1) {
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[2];
-                nowPos[1] = nowPos[1] - 1;
+                nowPos[1]++;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[4];
                 clearMap()
@@ -114,20 +142,28 @@
 
 
         } else if (e.keyCode == 40) {
-            
-
-        } else if (e.keyCode == 37) {
-            if(nowPos[1] > 0){
+            if (nowPos[0] < mapSize - 1) {
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[2];
-                nowPos[1] = nowPos[1] - 1;
+                nowPos[0]++;
+                user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                user.map = photo[4];
+                clearMap()
+                updateView();
+            }
+
+        } else if (e.keyCode == 37) {
+            if (nowPos[1] > 0) {
+                user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                user.map = photo[2];
+                nowPos[1]--;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[4];
                 clearMap()
                 updateView();
             }
         }
-
+        console.log(nowPos)
     })
 </script>
 
