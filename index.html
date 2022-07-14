@@ -44,7 +44,7 @@
     }
 
     function updateView() {
-        $("body").append(`<div>You can right click to kill Trap and arrow keys to move</div>`);
+        $("body").append(`<div>You can left click to kill trap and arrow keys to move</div>`);
         for (let i = 0; i < mapArray.length; i++) {
             if (i == 0 || (i % mapSize) == 0) {
                 $("body").append("<div width=100%></div>");
