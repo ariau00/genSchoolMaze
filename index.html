@@ -32,8 +32,19 @@
         getTrapPos();
         updateView();
     }
+    function reset(){
+        mapSize = 0;
+        while (!checkMapSize(mapSize)) {
+            mapSize = prompt("Please enter map size (5-10)");
+        }
+        mapArray = [];
+        randomValue = 0;
+        trapPos = [];
+        start();
+    }
 
     function updateView() {
+        $("body").append(`<div>You can right click to kill Trap and arrow keys to move</div>`);
         for (let i = 0; i < mapArray.length; i++) {
             if (i == 0 || (i % mapSize) == 0) {
                 $("body").append("<div width=100%></div>");
@@ -41,6 +52,7 @@
             $("body").append(`<img id=${mapArray[i].ID} src="${mapArray[i].map}" onclick="killTrap(${mapArray[i].ID})"></img>`);
         }
     }
+
     function getTrapPos() {
         const trapList = mapArray.filter(trap => trap.map === 'trap.png')
         console.log(trapList[1].ID)
@@ -50,7 +62,6 @@
     }
 
     function killTrap(trap) {
-
         const findTrap = trapPos.find(element => element == trap)
         if (findTrap >= 0) {
             const temp = trapPos.indexOf(trap);
@@ -60,7 +71,6 @@
             mapArray[trap].map = photo[1];
             clearMap();
             updateView();
-
         }
     }
 
@@ -77,6 +87,7 @@
     function setUserAndEndPoint() {
         let endPointArray = Math.floor(Math.random() * mapArray.length)
         let userPointArray = Math.floor(Math.random() * mapArray.length)
+        userPointArray = mapSize*mapSize-1; //fix bugs
         while (userPointArray == endPointArray) {
             endPointArray = Math.floor(Math.random() * mapArray.length)
             userPointArray = Math.floor(Math.random() * mapArray.length)
@@ -109,55 +120,79 @@
 
     function checkMapSize(value) {
         let regPos = /^[0-9]*[1-9][0-9]*$/;
-
-        if (regPos.test(value) && value >=5 && value <= 10) {
-            return true;
-        } else {
-            return false;
-        }
+        return regPos.test(value) && value >=5 && value <= 10 ? true : false;
     }
 
     addEventListener('keydown', (e) => {
-
-        if (e.keyCode == 38) {
+        if (e.keyCode == 38 || e.keyCode == 87) {
             if (nowPos[0] > 0) {
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[2];
                 nowPos[0]--;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                if(user.map == photo[0]){
+                    alert("You in a trap - Gameover")
+                    reset();
+                }else if(user.map == photo[3]){
+                    alert("You get away - Winner")
+                    reset();
+                }
                 user.map = photo[4];
                 clearMap()
                 updateView();
             }
-        } else if (e.keyCode == 39) {
+        } else if (e.keyCode == 39 || e.keyCode == 68) {
             if (nowPos[1] < mapSize - 1) {
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[2];
                 nowPos[1]++;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                if(user.map == photo[0]){
+                    alert("You in a trap - Gameover")
+                    reset();
+                }else if(user.map == photo[3]){
+                    alert("You get away - Winner")
+                    reset();
+                }
                 user.map = photo[4];
+                console.log(user.map)
                 clearMap()
                 updateView();
+                console.log(user.map)
             }
 
 
-        } else if (e.keyCode == 40) {
+        } else if (e.keyCode == 40 || e.keyCode == 83) {
             if (nowPos[0] < mapSize - 1) {
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[2];
                 nowPos[0]++;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                if(user.map == photo[0]){
+                    alert("You in a trap - Gameover")
+                    reset();
+                }else if(user.map == photo[3]){
+                    alert("You get away - Winner")
+                    reset();
+                }
                 user.map = photo[4];
                 clearMap()
                 updateView();
             }
 
-        } else if (e.keyCode == 37) {
+        } else if (e.keyCode == 37 || e.keyCode == 65) {
             if (nowPos[1] > 0) {
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
                 user.map = photo[2];
                 nowPos[1]--;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                if(user.map == photo[0]){
+                    alert("You in a trap - Gameover")
+                    reset();
+                }else if(user.map == photo[3]){
+                    alert("You get away - Winner")
+                    reset();
+                }
                 user.map = photo[4];
                 clearMap()
                 updateView();
