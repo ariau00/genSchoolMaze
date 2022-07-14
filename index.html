@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Maze</title>
+    <script src="jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+
+</body>
+
+<script>
+    let mapSize = 5;
+    let mapArray = [];
+    let photo = ['trap.png', 'road.png', 'through.png', 'endPoint.png', 'user.png'];
+    let randomValue = 0;
+    let user;
+    let nowPos;
+    let endPos;
+    start();
+
+    function start() {
+        printMap();
+        setUserAndEndPoint();
+        updateView();
+    }
+
+    function updateView() {
+        for (let i = 0; i < mapArray.length; i++) {
+            if (i == 0 || (i % mapSize) == 0) {
+                $("body").append("<div width=100%></div>");
+            }
+            $("body").append("<img src=" + mapArray[i].map + "></img>");
+        }
+    }
+
+    // for (let i = 0; i < mapSize; i++) {
+    //     for(let j = 0; j < mapSize; j++){
+    //         $("body").append("<img src='road.png'></div>");
+    //     }
+    //     let br = document.createElement('br');
+    //     document.body.append(br);
+    // }
+
+    function printMap() {
+        for (let i = 0; i < mapSize * mapSize; i++) {
+            mapArray[i] = {
+                "ID": i,
+                "map": photo[random()],
+                "xy": xyTransform(i)
+            }
+        }
+    }
+
+    function setUserAndEndPoint() {
+        let endPointArray = Math.floor(Math.random() * mapArray.length)
+        let userPointArray = Math.floor(Math.random() * mapArray.length)
+        while (userPointArray == endPointArray) {
+            endPointArray = Math.floor(Math.random() * mapArray.length)
+            userPointArray = Math.floor(Math.random() * mapArray.length)
+        }
+        mapArray[endPointArray].map = photo[3];
+        mapArray[userPointArray].map = photo[4];
+        nowPos = mapArray[userPointArray].xy;
+        endPos = mapArray[endPointArray].xy;
+    }
+
+    function random() {
+        randomValue = Math.floor(Math.random() * (photo.length - 3))
+        return randomValue;
+    }
+
+    function userMove() {
+        let userPoint = mapArray.find(user => user.map == photo[4])
+    }
+
+    function xyTransform(id) {
+        let xy = [];
+
+        let tempX = parseInt((id) / mapSize);
+        xy.push(tempX);
+        let tempY = (id) % mapSize;
+        xy.push(tempY);
+
+        return xy;
+    }
+
+    function clearMap() {
+        $("body").html("");
+    }
+
+    addEventListener('keydown', (e) => {
+        if (e.keyCode == 38) {
+            if(nowPos[0] >= 0){
+                user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                user.map = photo[2];
+                nowPos[0] = nowPos[0] - 1;
+                user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                user.map = photo[4];
+                clearMap()
+                updateView();
+            }
+        } else if (e.keyCode == 39) {
+            if(nowPos[1] < mapSize){
+                user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                user.map = photo[2];
+                nowPos[1] = nowPos[1] - 1;
+                user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                user.map = photo[4];
+                clearMap()
+                updateView();
+            }
+
+
+        } else if (e.keyCode == 40) {
+            
+
+        } else if (e.keyCode == 37) {
+            if(nowPos[1] > 0){
+                user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                user.map = photo[2];
+                nowPos[1] = nowPos[1] - 1;
+                user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
+                user.map = photo[4];
+                clearMap()
+                updateView();
+            }
+        }
+
+    })
+</script>
+
+</html>
