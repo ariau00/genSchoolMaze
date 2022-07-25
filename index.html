@@ -32,7 +32,7 @@
         getTrapPos();
         updateView();
     }
-    function reset(){
+    function reset() {
         mapSize = 0;
         while (!checkMapSize(mapSize)) {
             mapSize = prompt("Please enter map size (5-10)");
@@ -55,7 +55,6 @@
 
     function getTrapPos() {
         const trapList = mapArray.filter(trap => trap.map === 'trap.png')
-        console.log(trapList[1].ID)
         for (let i = 0; i < trapList.length; i++) {
             trapPos.push(trapList[i].ID);
         }
@@ -87,15 +86,19 @@
     function setUserAndEndPoint() {
         let endPointArray = Math.floor(Math.random() * mapArray.length)
         let userPointArray = Math.floor(Math.random() * mapArray.length)
-        userPointArray = mapSize*mapSize-1; //fix bugs
         while (userPointArray == endPointArray) {
             endPointArray = Math.floor(Math.random() * mapArray.length)
             userPointArray = Math.floor(Math.random() * mapArray.length)
         }
         mapArray[endPointArray].map = photo[3];
         mapArray[userPointArray].map = photo[4];
-        nowPos = mapArray[userPointArray].xy;
+        nowPos = startPos(userPointArray);
         endPos = mapArray[endPointArray].xy;
+    }
+
+    function startPos(userPointArray){
+        const newUserPoint = JSON.parse(JSON.stringify(mapArray[userPointArray].xy));
+        return newUserPoint;
     }
 
     function random() {
@@ -120,7 +123,7 @@
 
     function checkMapSize(value) {
         let regPos = /^[0-9]*[1-9][0-9]*$/;
-        return regPos.test(value) && value >=5 && value <= 10 ? true : false;
+        return regPos.test(value) && value >= 5 && value <= 10 ? true : false;
     }
 
     addEventListener('keydown', (e) => {
@@ -130,10 +133,10 @@
                 user.map = photo[2];
                 nowPos[0]--;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
-                if(user.map == photo[0]){
+                if (user.map == photo[0]) {
                     alert("You in a trap - Gameover")
                     reset();
-                }else if(user.map == photo[3]){
+                } else if (user.map == photo[3]) {
                     alert("You get away - Winner")
                     reset();
                 }
@@ -147,18 +150,16 @@
                 user.map = photo[2];
                 nowPos[1]++;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
-                if(user.map == photo[0]){
+                if (user.map == photo[0]) {
                     alert("You in a trap - Gameover")
                     reset();
-                }else if(user.map == photo[3]){
+                } else if (user.map == photo[3]) {
                     alert("You get away - Winner")
                     reset();
                 }
                 user.map = photo[4];
-                console.log(user.map)
                 clearMap()
                 updateView();
-                console.log(user.map)
             }
 
 
@@ -168,10 +169,10 @@
                 user.map = photo[2];
                 nowPos[0]++;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
-                if(user.map == photo[0]){
+                if (user.map == photo[0]) {
                     alert("You in a trap - Gameover")
                     reset();
-                }else if(user.map == photo[3]){
+                } else if (user.map == photo[3]) {
                     alert("You get away - Winner")
                     reset();
                 }
@@ -186,10 +187,10 @@
                 user.map = photo[2];
                 nowPos[1]--;
                 user = mapArray.find(xy => xy.xy[0] === nowPos[0] && xy.xy[1] === nowPos[1])
-                if(user.map == photo[0]){
+                if (user.map == photo[0]) {
                     alert("You in a trap - Gameover")
                     reset();
-                }else if(user.map == photo[3]){
+                } else if (user.map == photo[3]) {
                     alert("You get away - Winner")
                     reset();
                 }
